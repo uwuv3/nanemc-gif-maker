@@ -12,6 +12,7 @@ const frameSkip = 5;
 const gifSpeed = 3 / 100;
 const baseUrl = "https://s.namemc.com/3d/skin/body.png";
 const time = 180 //0 = default - 180 recommended
+const reserve = true
 // Generate angles
 const frameAngles = Array.from({ length: Math.ceil(360 / frameSkip) }, (_, i) => i * frameSkip);
 
@@ -24,7 +25,7 @@ let pivot = frameAngles.includes(startTheta)
 
 const pivotIndex = frameAngles.indexOf(pivot);
 let angles = frameAngles.slice(pivotIndex).concat(frameAngles.slice(0, pivotIndex));
-
+if (reserve) angles = [...angles].reverse().slice(1, -1)
 // Function to fetch an image as a buffer (RAM caching)
 async function fetchImage(angle) {
     const url = `${baseUrl}?id=${id}&model=${model}&time=${time}&theta=${angle}&phi=${phi}&width=${width}&height=${height}`;
@@ -62,8 +63,8 @@ async function fetchImage(angle) {
     console.log("Creating GIF...");
     const image = await GIF.createGif({
         gifEncoderOptions: { highWaterMark: 64, dispose: 2 },
-        quality: 10,
-        delay: gifSpeed * 1000, 
+        quality: 60,
+        delay: gifSpeed * 1000,
         transparent: 0x01010101
     })
 
